@@ -1,0 +1,44 @@
+<html>
+    <button data-testid="button" id="btn">Click me</button>
+</html>
+
+<script>
+    function createWindowRef() {
+        try {
+            const windowRef = window.open('', '_blank');
+            if (!windowRef) {
+            return null;
+            }
+            const metaTag = windowRef.document.createElement('meta');
+            metaTag['name'] = 'viewport';
+            metaTag['content'] = 'width=device-width, initial-scale=1';
+            windowRef.document.getElementsByTagName('head')[0].appendChild(metaTag);
+
+            windowRef.document.body.innerHTML = '<p>Loading</p>';
+
+            return windowRef;
+        } catch (_) {
+            return null;
+        }
+    }
+
+    document.getElementById('btn').addEventListener('click', () => {
+        const windowRef = createWindowRef();
+        try {
+            // TODO: windowRef might be null! Consider providing a fallback or the browser tab might crash.
+            console.log(windowRef);
+            if (windowRef) {
+                windowRef.location.assign('https://www.faa.gov/sites/faa.gov/files/regulations_policies/policy_guidance/envir_policy/airquality_handbook/Air_Quality_Handbook_Tutorial.pdf');
+                notify('Successfully downloaded label', 'success');
+            }
+            
+        } catch (e) {
+            notify(
+            e instanceof Error && e.message
+                ? e.message
+                : 'An error was encountered downloading the label',
+            'error',
+            );
+        }
+    })
+</script>
